@@ -3,16 +3,67 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="./style.css">
   <title>Puissance 4</title>
 </head>
 <body>
 
-  <div id="game">
-    Veuillez activer javascript pour jouer.
+  <div class="text-center mt-2 mb-6">
+    <h1 class="text-4xl">Puissance 4 by Reno</h1>
   </div>
 
+  <div id="selectOptions" class="mb-8" style="display: block;">
+    <form action="#" class="grid grid-cols-3 gap-4">
+      <div class="flex flex-col border border-gray-300 rounded-md p-2">
+        <label for="rowsNumber" class="mb-2">Nombre de lignes</label>
+        <input type="number" name="rowsNumber" id="rowsNumber" min="6" max="10"
+          class="border border-gray-300 rounded-md p-2 mb-2" value="7" required>
+        <label for="colsNumber" class="mb-2">Nombre de colonnes</label>
+        <input type="number" name="colsNumber" id="colsNumber" min="6" max="10"
+          class="border border-gray-300 rounded-md p-2" value="7" required>
+      </div>
+      <div class="flex flex-col border border-gray-300 rounded-md p-2">
+        <label for="player1name" class="mb-2">Nom du joueur 1 :</label>
+        <input type="text" name="player1name" id="player1name"
+          class="border border-gray-300 rounded-md p-2" value="Player1" required>
+        <label for="player1color" class="mt-2 mb-2">Couleur du joueur 1 :</label>
+        <input type="color" name="player1color" id="player1color"
+          class="border border-gray-300 rounded-md p-2 h-10 w-32" value="#FF0000" required>
+      </div>
+      <div class="flex flex-col border border-gray-300 rounded-md p-2">
+        <label for="player2name" class="mb-2">Nom du joueur 2 :</label>
+        <input type="text" name="player2name" id="player2name"
+          class="border border-gray-300 rounded-md p-2" value="Player2" required>
+        <label for="player2color" class="mt-2 mb-2">Couleur du joueur 2 :</label>
+        <input type="color" name="player2color" id="player2color"
+          class="border border-gray-300 rounded-md p-2 h-10 w-32" value="#FBFF00" required>
+      </div>
+      <div class="flex justify-center col-start-2">
+        <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+          Valider
+        </button>
+      </div>
+    </form>
+  </div>
 
-  <script type="text/javascript" src="./js/game.js"></script>
+  <section id="gameSection" style="display: none;" class="container mx-auto flex flex-col items-center">
+    <div class="grid grid-cols-12 gap-4">
+      <div id="gamePlay" class="col-span-3">
+        <!-- div où s'affichent les informations de jeu-->
+        <p>Pion n°<span id="gameTurnDisplay"></span></p>
+        <p>C'est au tour de <span id="playerNameDisplay"></span></p>
+      </div>
+  
+      <div id="p4" class="col-span-9">
+        <!-- div où s'affiche le jeu-->
+      </div>  
+    </div>
+  </section>
+
+
+
+  <script type="module" src="./js/main.js"></script>
+  <!--<script type="text/javascript" src="./js/gameSoluce.js"></script>-->
 </body>
 </html>

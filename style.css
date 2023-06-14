@@ -1,8 +1,8 @@
-#game table {
+#p4 table {
   border: 3px blue outset;
   background-color: blue;
 }
-#game td {
+#p4 td {
   width: 2cm;
   height: 2cm;
   margin: 0px;
@@ -12,9 +12,9 @@
   background-color: white;
   cursor: pointer;
 }
-#game td.player1 {
+#p4 td.player1 {
   background-color: red;
 }
-#game td.player2 {
+#p4 td.player2 {
   background-color: yellow;
 }/*# sourceMappingURL=style.css.map */

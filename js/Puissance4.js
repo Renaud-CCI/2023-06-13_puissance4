@@ -1,24 +1,24 @@
-
+import Player from './Player.js';
 
 class Puissance4 {
-  /*
-    Intialise un plateau de jeu de dimensions `rows` × `cols` (par défaut 6×7),
-    et fait l'affichage dans l'élément `element_id` du DOM.
-    */
-  constructor(element_id, rows=6, cols=7) {
-    // Nombre de lignes et de colonnes
+  
+  constructor(rows, cols, player1, player2) {
+
     this.rows = rows;
     this.cols = cols;
+    this.player1 = player1;
+    this.player2 = player2;
+    
     // cet tableau à deux dimensions contient l'état du jeu:
     //   0: case vide
     //   1: pion du joueur 1
     //   2: pion du joueur 2
-    this.board = Array(this.rows);
+    this.board = Array(parseInt(this.rows));
     for (let i = 0; i < this.rows; i++) {
-      this.board[i] = Array(this.cols).fill(0);
+      this.board[i] = Array(parseInt(this.cols)).fill(0);
     }
-    // un entier: 1 ou 2 (le numéro du prochain joueur)
-    this.turn = 1;
+    // Id du prochain joueur
+    this.playerId = 1;
     // Nombre de coups joués
     this.moves = 0;
     /* un entier indiquant le gagnant:
@@ -29,15 +29,21 @@ class Puissance4 {
     */
     this.winner = null;
 
-    // L'élément du DOM où se fait l'affichage
-    this.element = document.querySelector(element_id);
+    // L'élément du DOM où se fait l'affichage des indications de jeu
+    this.playerNameDisplay= document.querySelector('#playerNameDisplay');
+    this.playerNameDisplay.innerHTML=this.player1.name;
+    this.playerNameDisplay.style.color=this.player1.color;
+    this.gameTurnDisplay = document.querySelector('#gameTurnDisplay');
+    this.gameTurnDisplay.innerHTML=this.moves+1;
+    // L'élément du DOM où se fait l'affichage du jeu
+    this.p4div = document.querySelector('#p4');
     // On ajoute le gestionnaire d'événements pour gérer le click
     //
     // Pour des raisons techniques, il est nécessaire de passer comme gestionnaire
     // une fonction anonyme faisant appel à `this.handle_click`. Passer directement
     // `this.handle_click` comme gestionnaire, sans wrapping, rendrait le mot clef
     // `this` inutilisable dans le gestionnaire. Voir le "binding de this".
-    this.element.addEventListener('click', (event) => this.handle_click(event));
+    this.p4div.addEventListener('click', (event) => this.handle_click(event));
     // On fait l'affichage
     this.render();
   }
@@ -52,18 +58,34 @@ class Puissance4 {
       for (let j = 0; j < this.cols; j++) {
         let td = tr.appendChild(document.createElement('td'));
         let colour = this.board[i][j];
-        if (colour)
-          td.className = 'player' + colour;
+        if (colour){
+          if (parseInt(colour) == 1){
+            td.style.backgroundColor = this.player1.color;
+          } else {
+            td.style.backgroundColor = this.player2.color;
+          }
+        }
         td.dataset.column = j;
       }
     }
-    this.element.innerHTML = '';
-    this.element.appendChild(table);
+
+    if (this.moves%2 == 1) {
+      this.playerNameDisplay.innerHTML=this.player2.name
+      this.playerNameDisplay.style.color=this.player2.color
+      this.gameTurnDisplay.innerHTML=this.moves+1;
+    } else {
+      this.playerNameDisplay.innerHTML=this.player1.name
+      this.playerNameDisplay.style.color=this.player1.color
+      this.gameTurnDisplay.innerHTML=this.moves+1;
+    }
+
+    this.p4div.innerHTML = '';
+    this.p4div.appendChild(table);
   }
   
-  set(row, column, player) {
+  set(row, column, playerId) {
     // On colore la case
-    this.board[row][column] = player;
+    this.board[row][column] = playerId;
     // On compte le coup
     this.moves++;
   }
@@ -72,6 +94,7 @@ class Puissance4 {
   play(column) {
     // Trouver la première case libre dans la colonne
     let row;
+    // console.log(this.board);
     for (let i = 0; i < this.rows; i++) {
       if (this.board[i][column] == 0) {
         row = i;
@@ -82,7 +105,7 @@ class Puissance4 {
       return null;
     } else {
       // Effectuer le coup
-      this.set(row, column, this.turn);
+      this.set(row, column, this.playerId);
       // Renvoyer la ligne où on a joué
       return row;
     }
@@ -91,7 +114,7 @@ class Puissance4 {
   handle_click(event) {
     // Vérifier si la partie est encore en cours
     if (this.winner !== null) {
-      if (window.confirm("Game over!\n\nDo you want to restart?")) {
+      if (window.confirm("Game over!\n\nVoulez-vous recommencer?")) {
         this.reset();
         this.render();
       }
@@ -110,13 +133,14 @@ class Puissance4 {
         window.alert("Column is full!");
       } else {
         // Vérifier s'il y a un gagnant, ou si la partie est finie
-        if (this.win(row, column, this.turn)) {
-          this.winner = this.turn;
+        if (this.win(row, column, this.playerId)) {
+          this.winner = this.playerId;
         } else if (this.moves >= this.rows * this.columns) {
           this.winner = 0;
         }
         // Passer le tour : 3 - 2 = 1, 3 - 1 = 2
-        this.turn = 3 - this.turn;
+        this.playerId = 3 - this.playerId;
+
 
         // Mettre à jour l'affichage
         this.render()
@@ -125,13 +149,13 @@ class Puissance4 {
         //message si la partie est finie...
         switch (this.winner) {
           case 0: 
-            window.alert("Null game!!"); 
+            window.alert("Match nul !!"); 
             break;
           case 1:
-            window.alert("Player 1 wins"); 
+            window.alert(this.player1.name + " gagne la partie !"); 
             break;
           case 2:
-            window.alert("Player 2 wins"); 
+            window.alert(this.player2.name + " gagne la partie !"); 
             break;
         }
       }
@@ -170,7 +194,7 @@ class Puissance4 {
     count = 0;
     shift = row + column;
     for (let i = Math.max(shift - this.cols + 1, 0); i < Math.min(this.rows, shift + 1); i++) {
-      console.log(i,shift-i,shift)
+      // console.log(i,shift-i,shift)
       count = (this.board[i][shift - i] == player) ? count+1 : 0;
       if (count >= 4) return true;
     }
@@ -185,11 +209,10 @@ class Puissance4 {
         this.board[i][j] = 0;
       }
     }
-    this.move = 0;
+    this.moves = 0;
     this.winner = null;
   }
 }
 
-// On initialise le plateau et on visualise dans le DOM
-// (dans la balise d'identifiant `game`).
-let p4 = new Puissance4('#game');
+// Export de la classe Puissance4
+export default Puissance4;
