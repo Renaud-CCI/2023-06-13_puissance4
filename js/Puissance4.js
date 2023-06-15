@@ -35,6 +35,15 @@ class Puissance4 {
     this.playerNameDisplay.style.color=this.player1.color;
     this.gameTurnDisplay = document.querySelector('#gameTurnDisplay');
     this.gameTurnDisplay.innerHTML=this.moves+1;
+
+    //Tableau de scores
+    this.player1ScoreHead = document.querySelector('#player1ScoreHead');
+    this.player1ScoreHeadSpan = document.querySelector('#player1ScoreHeadSpan');
+    this.player1Score = document.querySelector('#player1Score');
+    this.player2ScoreHead = document.querySelector('#player2ScoreHead');
+    this.player2ScoreHeadSpan = document.querySelector('#player2ScoreHeadSpan');
+    this.player2Score = document.querySelector('#player2Score');
+
     // L'élément du DOM où se fait l'affichage du jeu
     this.p4div = document.querySelector('#p4');
     // On ajoute le gestionnaire d'événements pour gérer le click
@@ -45,11 +54,25 @@ class Puissance4 {
     // `this` inutilisable dans le gestionnaire. Voir le "binding de this".
     this.p4div.addEventListener('click', (event) => this.handle_click(event));
     // On fait l'affichage
+    this.initEvents(); // Ajout de l'écouteur d'événements
     this.render();
   }
+
   
+
+
   /* Affiche le plateau de jeu dans le DOM */
   render() {
+    // Affichage tableau de scores
+    player1ScoreHeadSpan.innerHTML=this.player1.name;
+    player1ScoreHead.style.backgroundColor = this.player1.color;
+    player1Score.innerHTML=this.player1.score;
+    player1Score.style.backgroundColor = this.player1.color;
+    player2ScoreHeadSpan.innerHTML=this.player2.name;
+    player2ScoreHead.style.backgroundColor = this.player2.color;
+    player2Score.innerHTML=this.player2.score;
+    player2Score.style.backgroundColor = this.player2.color;
+
     let table = document.createElement('table');
     //ATTENTION, la page html est écrite de haut en bas. Les indices 
     //pour le jeu vont de bas en haut (compteur i de la boucle)
@@ -81,6 +104,9 @@ class Puissance4 {
 
     this.p4div.innerHTML = '';
     this.p4div.appendChild(table);
+
+
+
   }
   
   set(row, column, playerId) {
@@ -90,7 +116,7 @@ class Puissance4 {
     this.moves++;
   }
 
-  /* Cette fonction ajoute un pion dans une colonne */
+  /* Cette méthode ajoute un pion dans une colonne */
   play(column) {
     // Trouver la première case libre dans la colonne
     let row;
@@ -114,9 +140,11 @@ class Puissance4 {
   handle_click(event) {
     // Vérifier si la partie est encore en cours
     if (this.winner !== null) {
-      if (window.confirm("Game over!\n\nVoulez-vous recommencer?")) {
+      if (window.confirm("Game over!\n\nVoulez-vous continuer le match ?")) {
         this.reset();
         this.render();
+      } else {
+        location.reload();
       }
       return;
     }
@@ -139,6 +167,7 @@ class Puissance4 {
           this.winner = 0;
         }
         // Passer le tour : 3 - 2 = 1, 3 - 1 = 2
+        // this.playerId = 3 - this.playerId;
         this.playerId = 3 - this.playerId;
 
 
@@ -152,10 +181,16 @@ class Puissance4 {
             window.alert("Match nul !!"); 
             break;
           case 1:
-            window.alert(this.player1.name + " gagne la partie !"); 
+            this.player1.score ++;
+            player1Score.innerHTML=this.player1.score;
+            this.render();
+            window.alert(this.player1.name + " gagne la partie !");
             break;
           case 2:
-            window.alert(this.player2.name + " gagne la partie !"); 
+            this.player2.score ++;
+            player2Score.innerHTML=this.player1.score;
+            this.render();
+            window.alert(this.player2.name + " gagne la partie !");
             break;
         }
       }
@@ -163,7 +198,7 @@ class Puissance4 {
   }
 
   /* 
-    Cette fonction vérifie si le coup dans la case `row`, `column` par
+    Cette méthode vérifie si le coup dans la case `row`, `column` par
     le joueur `player` est un coup gagnant.
     
     Renvoie :
@@ -202,7 +237,7 @@ class Puissance4 {
     return false;
   }
 
-  // Cette fonction vide le plateau et remet à zéro l'état
+  // Méthode qui vide le plateau et les compteurs à zéro
   reset() {
     for (let i = 0; i < this.rows; i++) {
       for (let j = 0; j < this.cols; j++) {
@@ -211,6 +246,16 @@ class Puissance4 {
     }
     this.moves = 0;
     this.winner = null;
+  }
+
+  // Méthode pour initialiser les événements
+  initEvents() {
+    const resetButton = document.querySelector('#gamePlayReset');
+    resetButton.addEventListener('click', (e) => {
+      e.preventDefault();
+      this.reset(); // Appelle la méthode reset() pour réinitialiser le jeu
+      this.render();
+    });
   }
 }
 

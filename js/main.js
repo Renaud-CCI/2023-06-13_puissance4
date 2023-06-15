@@ -1,6 +1,7 @@
 import Puissance4 from "./Puissance4.js";
 import Player from "./Player.js";
 
+let p4;
 
 function runGame() {
   const rows = document.querySelector('#rowsNumber').value;
@@ -12,10 +13,20 @@ function runGame() {
 
   const player1 = new Player(name1, color1);
   const player2 = new Player(name2, color2);
-
+  
   // Initialiser le jeu Puissance4
-  let p4 = new Puissance4(rows, cols, player1, player2);
+  p4 = new Puissance4(rows, cols, player1, player2);
+  
+  
 }
+
+
+// let resetButton = document.querySelector('#gamePlayReset');
+// resetButton.addEventListener('click', function(e){
+//   console.log(e);
+//   p4.reset();
+// })
+
 
 
 const form = document.querySelector('form');

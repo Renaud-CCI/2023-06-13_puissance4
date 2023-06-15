@@ -1,25 +1,37 @@
-#p4{
-  
-  table {
-    border: 3px blue outset;
-    background-color: blue;
+@font-face {
+  font-family: zoika;
+  src: url(./assets/Zoika.ttf);
+}
+
+.font-zoika{
+  font-family: zoika;
+}
+
+  h1{
+    word-wrap: break-word;
   }
 
-  td {
-    width: 2cm;
-    height: 2cm;
-    margin: 0px;
-    padding: 0px;
-    border: 2px blue inset;
-    border-radius: 2cm;
-    background-color: white;
-    cursor: pointer;
-  
-    &.player1 {
-    background-color: red;
+body{
+  font-weight: bold;
+  font-size: 22px;
+
+  #p4{
+    
+    table {
+      border: 3px #1d648d;
+      background-color: #0369a1;
     }
-    &.player2 {
-    background-color: yellow;
+
+    td {
+      width: 2cm;
+      height: 2cm;
+      margin: 0px;
+      padding: 0px;
+      border: 2px #0284c7;
+      border-radius: 2cm;
+      background-color: white;
+      cursor: pointer;
+  
     }
   }
 }
